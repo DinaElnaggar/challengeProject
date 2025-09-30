@@ -1,0 +1,47 @@
+services:
+  laravel:
+    build: .
+    container_name: orthoplex_app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "9000:9000"   # host:container
+    depends_on:
+      - mysql
+      - mailhog
+
+  mysql:
+    image: mysql:8
+    container_name: orthoplex_db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: orthoplex_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: orthoplex_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ''
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+  mailhog:
+    image: axllent/mailpit:latest
+    container_name: orthoplex_mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  db_data:
+    driver: local
