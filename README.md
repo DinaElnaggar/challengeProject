@@ -1,4 +1,4 @@
-## Orthoplex API (Laravel)
+## Challenge API (Laravel)
 
 Concise guide for running the stack and using the core features: JWT auth, email verification, optional 2FA (TOTP), passwordless magic links, and basic login analytics.
 
@@ -31,7 +31,7 @@ MAIL_HOST=mailhog
 MAIL_PORT=1025
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS=no-reply@example.com
-MAIL_FROM_NAME=Orthoplex
+MAIL_FROM_NAME=Challenge Company
 ```
 
 ### API endpoints (summary)
