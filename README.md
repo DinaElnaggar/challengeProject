@@ -44,15 +44,44 @@ MAIL_FROM_ADDRESS=no-reply@example.com
 MAIL_FROM_NAME=Challenge Company
 ```
 
-### API endpoints (summary)
+### API Documentation
 
-- OpenAPI spec file: `public/openapi.yaml` → `http://localhost:9000/openapi.yaml`
-- Full API documentation (Swagger UI): `http://localhost:9000/docs`
+**Complete API Reference:** [Swagger UI](http://localhost:9000/docs) | [OpenAPI Spec](http://localhost:9000/openapi.yaml) | [`public/openapi.yaml`](public/openapi.yaml)
 
-- Auth: `POST /api/register`, `POST /api/login`, `GET /api/user`, `POST /api/logout`
-- 2FA (TOTP): `POST /api/2fa/setup`, `POST /api/2fa/enable`, `POST /api/2fa/disable`
-- Magic link: `POST /api/magic`, `GET /api/magic/consume/{token}`
-- Analytics: `GET /api/users/top-logins`, `GET /api/users/inactive`
+#### Core Endpoints
+
+**Authentication & Authorization**
+- `POST /api/register` - User registration with email verification
+- `POST /api/login` - JWT-based authentication with optional 2FA
+- `GET /api/user` - Get current authenticated user profile
+- `POST /api/logout` - Invalidate JWT token
+
+**Two-Factor Authentication (TOTP)**
+- `POST /api/2fa/setup` - Generate TOTP secret and QR code
+- `POST /api/2fa/enable` - Enable 2FA with OTP verification
+- `POST /api/2fa/disable` - Disable 2FA for current user
+
+**Passwordless Authentication**
+- `POST /api/magic` - Request magic login link via email
+- `GET /api/magic/consume/{token}` - Consume magic link token
+
+**User Management & Analytics**
+- `GET /api/users` - List users (paginated)
+- `POST /api/users` - Create new user
+- `GET /api/users/{id}` - Get user details
+- `PUT /api/users/{id}` - Update user information
+- `DELETE /api/users/{id}` - Soft delete user
+- `POST /api/users/{id}/restore` - Restore deleted user
+- `GET /api/users/top-logins` - Top users by login activity
+- `GET /api/users/inactive` - Inactive users report
+
+**GDPR Compliance**
+- `POST /api/users/{id}/export` - Request user data export
+- `GET /api/users/{id}/export/download` - Download export archive
+- `POST /api/users/{id}/gdpr-delete` - Request user data deletion
+- `POST /api/gdpr-delete/{id}/approve` - Approve deletion request
+- `POST /api/gdpr-delete/{id}/reject` - Reject deletion request
+- `POST /api/gdpr-delete/{id}/process` - Process approved deletion
 
 
 All protected routes require `Authorization: Bearer <JWT>`.
