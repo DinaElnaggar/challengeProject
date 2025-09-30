@@ -20,7 +20,7 @@ Route::get('magic/consume/{token}', [AuthController::class, 'magicConsume']);
 // Public API endpoint for invitation acceptance returns JSON (no redirect to login)
 Route::get('orgs/invitations/accept', [OrgInvitationController::class, 'accept']);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api'])->group(function () {
     Route::get('user', [AuthController::class, 'user']);
     Route::post('logout', [AuthController::class, 'logout']);
     // 2FA endpoints

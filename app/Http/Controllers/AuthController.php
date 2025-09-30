@@ -36,18 +36,9 @@ class AuthController extends Controller
      * Body: { name, email, password }
      * Optional header: Idempotency-Key
      */
-    public function register(Request $request)
+    public function register(\App\Http\Requests\RegisterRequest $request)
     {
         $this->assertIdempotency($request);
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors()->toArray());
-        }
 
         $user = User::create([
             'name' => $request->name,
@@ -67,7 +58,7 @@ class AuthController extends Controller
      * Login with email and password. If 2FA enabled, require otp or backup_code.
      * Optional header: Idempotency-Key
      */
-    public function login(Request $request)
+    public function login(\App\Http\Requests\LoginRequest $request)
     {
         $this->assertIdempotency($request);
         $this->ensureIsNotRateLimited($request);
