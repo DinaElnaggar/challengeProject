@@ -334,4 +334,3 @@ curl -H "Authorization: Bearer <JWT>" \
   - Run the rollup for the relevant date if testing same-day.
 - Inactive endpoint shows many users:
   - `last_login_at` updates via the job; ensure the queue is processing.
-
