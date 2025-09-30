@@ -2,6 +2,16 @@
 
 Concise guide for running the stack and using the core features: JWT auth, email verification, optional 2FA (TOTP), passwordless magic links, and basic login analytics.
 
+### Tech Stack
+
+- Laravel 11 (Framework)
+- MySQL (Database)
+- Redis (Cache & queues)
+- Mailpit/Mailhog (Email testing)
+- Swagger (OpenAPI) (API docs)
+- JWT (Auth)
+- Google2FA (TOTP)
+
 ### Quick start
 
 1) Start services
