@@ -46,13 +46,14 @@ MAIL_FROM_NAME=Challenge Company
 
 ### API endpoints (summary)
 
+- OpenAPI spec file: `public/openapi.yaml` → `http://localhost:9000/openapi.yaml`
+- Full API documentation (Swagger UI): `http://localhost:9000/docs`
+
 - Auth: `POST /api/register`, `POST /api/login`, `GET /api/user`, `POST /api/logout`
 - 2FA (TOTP): `POST /api/2fa/setup`, `POST /api/2fa/enable`, `POST /api/2fa/disable`
 - Magic link: `POST /api/magic`, `GET /api/magic/consume/{token}`
 - Analytics: `GET /api/users/top-logins`, `GET /api/users/inactive`
 
-- OpenAPI spec file: `public/openapi.yaml` → `http://localhost:9000/openapi.yaml`
- - Swagger UI: `http://localhost:9000/docs`
 
 All protected routes require `Authorization: Bearer <JWT>`.
 
