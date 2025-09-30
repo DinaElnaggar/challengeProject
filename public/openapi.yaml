@@ -1,0 +1,269 @@
+openapi: 3.0.3
+info:
+  title: Orthoplex API
+  version: 1.0.0
+  description: JWT-based API with email verification, 2FA, magic link, GDPR, and analytics.
+servers:
+  - url: http://localhost:9000/api
+    description: Local
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name: { type: string }
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '201': { description: Created }
+  /login:
+    post:
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+                organization_id: { type: integer, nullable: true }
+      responses:
+        '200': { description: OK }
+  /email/resend:
+    post:
+      summary: Resend verification email
+      responses:
+        '200': { description: OK }
+  /email/verify/{id}/{hash}:
+    get:
+      summary: Verify email address
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: hash
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Verified }
+  /magic:
+    post:
+      summary: Request a passwordless magic link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200': { description: OK }
+  /magic/consume/{token}:
+    get:
+      summary: Consume a magic link token
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /user:
+    get:
+      summary: Get current authenticated user
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK }
+  /logout:
+    post:
+      summary: Logout current user
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '204': { description: No Content }
+  /2fa/setup:
+    post:
+      summary: Begin 2FA setup
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK }
+  /2fa/enable:
+    post:
+      summary: Enable 2FA with OTP
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otp: { type: string }
+      responses:
+        '200': { description: OK }
+  /2fa/disable:
+    post:
+      summary: Disable 2FA
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK }
+  /orgs/{org}/invite:
+    post:
+      summary: Invite a user to organization
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: org
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '201': { description: Created }
+  /orgs/invitations/accept:
+    get:
+      summary: Accept invitation (public JSON)
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Accept invitation (authenticated)
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK }
+  /users:
+    get:
+      summary: List users
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create user
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '201': { description: Created }
+  /users/{id}:
+    get:
+      summary: Get user
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+    put:
+      summary: Update user
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+    delete:
+      summary: Delete user
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: No Content }
+  /users/{id}/restore:
+    post:
+      summary: Restore soft-deleted user
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /users/{id}/export:
+    post:
+      summary: Request GDPR export for user
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '202': { description: Accepted }
+  /users/{id}/export/download:
+    get:
+      summary: Download GDPR export
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /users/{id}/gdpr-delete:
+    post:
+      summary: Create GDPR delete request
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '202': { description: Accepted }
+  /gdpr-delete/{requestId}/approve:
+    post:
+      summary: Approve GDPR delete request
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /gdpr-delete/{requestId}/reject:
+    post:
+      summary: Reject GDPR delete request
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /gdpr-delete/{requestId}/process:
+    post:
+      summary: Process GDPR delete request
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '202': { description: Accepted }
