@@ -37,7 +37,6 @@ class BuildGdprExport implements ShouldQueue
         // Build JSON files content
         $data = [
             'user' => $user ? $user->toArray() : null,
-            // Extend: add related data (organizations, roles, permissions, etc.)
         ];
 
         $tempDir = storage_path('app/gdpr_exports/' . Str::uuid());
