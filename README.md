@@ -46,7 +46,7 @@ MAIL_FROM_NAME=Challenge Company
 
 ### API Documentation
 
-**Complete API Reference:** [Swagger UI](http://localhost:9000/docs) | [OpenAPI Spec](http://localhost:9000/openapi.yaml) | [`public/openapi.yaml`](public/openapi.yaml)
+**Complete API Reference:** [Swagger UI](http://localhost:9000/docs) | [`OpenAPI Spec`](public/openapi.yaml)
 
 #### Core Endpoints
 
