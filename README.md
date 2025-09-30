@@ -10,47 +10,14 @@ Concise guide for running the stack and using the core features: JWT auth, email
 docker compose up -d --build
 ```
 
-App base URL: `http://localhost:9000`
+App: `http://localhost:9000`  •  API Docs: `http://localhost:9000/docs`
 
-2) Install dependencies (if not already installed in the container)
-
-```bash
-docker compose exec -T laravel composer install
-```
-
-3) Environment setup
-
-- Copy `.env.example` to `.env` and set DB credentials to match `compose.yaml`.
-- Generate keys/secrets:
-
-```bash
-docker compose exec -T laravel php artisan key:generate -n
-docker compose exec -T laravel php artisan jwt:secret -n
-```
-
-4) Run migrations
-
-```bash
-docker compose exec -T laravel php artisan migrate
-```
-
-5) Run seeders
-
-```bash
-docker compose exec -T laravel php artisan db:seed
-```
-
-Alternatively, to migrate and seed in one step:
-
-```bash
-docker compose exec -T laravel php artisan migrate --seed
-```
-
-6) (Optional) Start queue worker for async jobs
-
-```bash
-docker compose exec -d laravel php artisan queue:work --queue=default --sleep=1 --tries=3
-```
+The container entrypoint will automatically:
+- install Composer dependencies
+- generate `APP_KEY` if missing
+- generate `JWT_SECRET` if missing
+- run `php artisan migrate --seed` (retries until DB is ready)
+- start a background queue worker (disable with `START_QUEUE_WORKER=0`)
 
 ### Mail (Mailpit)
 
@@ -74,7 +41,22 @@ MAIL_FROM_NAME=Orthoplex
 - Magic link: `POST /api/magic`, `GET /api/magic/consume/{token}`
 - Analytics: `GET /api/users/top-logins`, `GET /api/users/inactive`
 
+- OpenAPI spec file: `public/openapi.yaml` → `http://localhost:9000/openapi.yaml`
+ - Swagger UI: `http://localhost:9000/docs`
+
 All protected routes require `Authorization: Bearer <JWT>`.
+
+### Optional manual commands
+
+If you prefer to run steps manually inside the container:
+
+```bash
+docker compose exec -T laravel composer install
+docker compose exec -T laravel php artisan key:generate -n
+docker compose exec -T laravel php artisan jwt:secret -n
+docker compose exec -T laravel php artisan migrate --seed
+docker compose exec -d laravel php artisan queue:work --queue=default --sleep=1 --tries=3
+```
 
 ### Troubleshooting
 
@@ -82,6 +64,4 @@ All protected routes require `Authorization: Bearer <JWT>`.
 - Organization context: pass `organization_id` on login for multi‑org users.
 - If email verification is required, use Mailpit to open the verification link.
 
-### License
 
-MIT

@@ -13,5 +13,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Run Laravel on port 9000 inside the container
-CMD ["sh", "-lc", "composer install && php -S 0.0.0.0:9000 -t public"]
+# Add entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Start everything with one command
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
